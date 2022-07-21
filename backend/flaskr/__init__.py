@@ -7,14 +7,14 @@ import random
 from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
-
 def paginate_questions(request, selection):
     page = request.args.get('page', 1, type=int)
     start = (page - 1) * QUESTIONS_PER_PAGE
     end = start + QUESTIONS_PER_PAGE
 
-    questions =[question.format() for question in selection]
-    formatted_questions = questions [start:end]
+    questions = [question.format() for question in selection]
+    formatted_questions = questions[start:end]
+
     return formatted_questions,
 
 def create_app(test_config=None):
@@ -84,7 +84,8 @@ def create_app(test_config=None):
                 'success': True,
                 'questions': formatted_questions,
                 'total_questions': len(selection),
-                'categories': categories_dict
+                'categories': categories_dict,
+                'current_category':None
             })
         except:
             abort(422)
@@ -217,27 +218,26 @@ def create_app(test_config=None):
     @app.route('/quizzes', methods= ['POST'])
     def play_quiz():
         body = request.get_json()
-        category = body.get('category')
+        category = Category.query.all()
+
         try:
-            body = request.get_json()
-            quiz_category =body.get('quiz_category')
+            quiz_category = body.get('quiz_category')
             previous_questions = body.get('previous_questions')
-
             category_id = quiz_category['id']
+            category_type =quiz_category['type']
 
-            if category_id == 0:
-                questions = Question.query.filter(Question.id.notin_(previous_questions), Question.category == category_id).all()
+            if(category_type == 'click'):
+                questions = Question.query.filter((Question.id.notin_(previous_questions))).all()
+                question = random.choice(questions) 
             else:
-                questions = Question.query.filter(Question.id.notin_(previous_questions), Question.category == category_id).all()
-            question = None
-            if(questions):
-                question = random.choice(questions)
+                questions = Question.query.filter(Question.category == category_id, (Question.id.notin_(previous_questions))).all()
+                question = random.choice(questions) 
             return jsonify({
                 'success': True,
                 'question': question.format()
             })
         except:
-            abort(422)   
+            abort(422)      
     """
     @TODO:
     Create error handlers for all expected errors
@@ -259,14 +259,14 @@ def create_app(test_config=None):
             "message": "Unprocessable"
         }), 422
     app.errorhandler(400)
-    def not_found(error):
+    def bad_record(error):
         return jsonify({
             "success": False, 
             "error": 400,
             "message": "Bad Record"
         }), 400
     app.errorhandler(500)
-    def not_found(error):
+    def server_error(error):
         return jsonify({
             "success": False, 
             "error": 500,
