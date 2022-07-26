@@ -99,21 +99,23 @@ You will need to provide detailed documentation of your API endpoints including 
 {
     "questions": [
         {
-            'id': 1,
-            'question': 'Which driver has the most formula 1 wins?',
-            'answer': 'Lewis Hamilton',
-            'difficulty': 2,
-            'category': 6
+            "id": 1,
+            "question": "Which driver has the most formula 1 wins?",
+            "answer": "Lewis Hamilton",
+            "difficulty": 2,
+            "category": 6
         },
     ],
-    'totalQuestions': 10,
-    'categories': { '1' : "Science",
-    '2' : "Art",
-    '3' : "Geography",
-    '4' : "History",
-    '5' : "Entertainment",
-    '6' : "Sports" },
-    'currentCategory': 'History'
+    "totalQuestions": 10,
+    'categories': {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+    },
+    "currentCategory": 'Sports'
 }
 ```
 `GET 'api/v1.0/categories/${id}/questions'`
@@ -122,17 +124,17 @@ You will need to provide detailed documentation of your API endpoints including 
 - Returns: An object with questions for the specified category, total questions, and current category string
 ```json
 {
-    'questions': [
+     "questions": [
         {
-            'id': 1,
-            'question': 'Which driver has the most formula 1 wins?',
-            'answer': 'Lewis Hamilton',
-            'difficulty': 2,
-            'category': 6
+            "id": 1,
+            "question": "Which driver has the most formula 1 wins?",
+            "answer": "Lewis Hamilton",
+            "difficulty": 2,
+            "category": 6
         },
     ],
-    'totalQuestions': 10,
-    'currentCategory': 'Science'
+    "totalQuestions": 10,
+    "currentCategory": 'Science'
 }
 ```
 `POST 'api/v1.0/questions'`
@@ -140,10 +142,10 @@ You will need to provide detailed documentation of your API endpoints including 
 - Request Body:
 ```json
 {
-        'question': 'Which driver has the most formula 1 wins?',
-        'answer': 'Lewis Hamilton',
-        'difficulty': 2,
-        'category': 6
+         "question": "Which driver has the most formula 1 wins?",
+         "answer": "Lewis Hamilton",
+         "difficulty": 2,
+         "category": 6
 }
 ```
 `POST 'api/v1.0/questions/search'`
@@ -151,23 +153,23 @@ You will need to provide detailed documentation of your API endpoints including 
 - Request Body:
 ```json
 {
-    'searchTerm': 'this is the term the user is looking for'
+    "searchTerm": "this is the term the user is looking for"
 }
 ```
 - Returns: any array of questions, a number of totalQuestions that met the search term and the current category string
 ```json
 {
-    'questions': [
+    "questions": [
         {
-           'id': 1,
-           'question': 'Which driver has the most formula 1 wins?',
-           'answer': 'Lewis Hamilton',
-           'difficulty': 2,
-           'category': 6
+            "id": 1,
+            "question": "Which driver has the most formula 1 wins?",
+            "answer": "Lewis Hamilton",
+            "difficulty": 2,
+            "category": 6
         },
     ],
-    'totalQuestions': 10,
-    'currentCategory': 'Sports'
+    "totalQuestions": 10,
+    "currentCategory": 'Science'
 }
 ```
 `DELETE 'api/v1.0/questions/${id}'`
@@ -179,19 +181,19 @@ You will need to provide detailed documentation of your API endpoints including 
 - Request Body:
 ```json
 {
-    'previous_questions': [1, 4, 20, 15]
-    quiz_category': 'current category'
+    "previous_questions": [1, 4, 20, 15]
+    "quiz_category": "current category"
  } 
 ```
 -Returns
 ```json
 {
     'question': {
-        'id': 1,
-        'question': 'Which driver has the most formula 1 wins?',
-        'answer': 'Lewis Hamilton',
-        'difficulty': 2,
-        'category': 6
+          "id": 1,
+           "question": "Which driver has the most formula 1 wins?",
+           "answer": "Lewis Hamilton",
+           "difficulty": 2,
+           "category": 6
     }
 }
 ```
