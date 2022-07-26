@@ -107,7 +107,7 @@ You will need to provide detailed documentation of your API endpoints including 
         },
     ],
     "totalQuestions": 10,
-    'categories': {
+    "categories": {
     "1": "Science",
     "2": "Art",
     "3": "Geography",
@@ -115,7 +115,7 @@ You will need to provide detailed documentation of your API endpoints including 
     "5": "Entertainment",
     "6": "Sports"
     },
-    "currentCategory": 'Sports'
+    "currentCategory": "Sports"
 }
 ```
 `GET 'api/v1.0/categories/${id}/questions'`
@@ -134,7 +134,7 @@ You will need to provide detailed documentation of your API endpoints including 
         },
     ],
     "totalQuestions": 10,
-    "currentCategory": 'Science'
+    "currentCategory": "Science"
 }
 ```
 `POST 'api/v1.0/questions'`
@@ -169,7 +169,7 @@ You will need to provide detailed documentation of your API endpoints including 
         },
     ],
     "totalQuestions": 10,
-    "currentCategory": 'Science'
+    "currentCategory": "Science"
 }
 ```
 `DELETE 'api/v1.0/questions/${id}'`
@@ -185,10 +185,10 @@ You will need to provide detailed documentation of your API endpoints including 
     "quiz_category": "current category"
  } 
 ```
--Returns
+- Returns
 ```json
 {
-    'question': {
+    "question": {
           "id": 1,
            "question": "Which driver has the most formula 1 wins?",
            "answer": "Lewis Hamilton",
