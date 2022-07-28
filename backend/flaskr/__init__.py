@@ -7,6 +7,7 @@ import random
 from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
+
 def paginate_questions(request, selection):
     page = request.args.get('page', 1, type=int)
     start = (page - 1) * QUESTIONS_PER_PAGE
@@ -14,9 +15,9 @@ def paginate_questions(request, selection):
 
     questions = [question.format() for question in selection]
     formatted_questions = questions[start:end]
-
-    return formatted_questions,
-
+    return formatted_questions
+   
+    
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
@@ -33,7 +34,7 @@ def create_app(test_config=None):
     @app.after_request
     def after_request(response):
         response.headers.add('Access-Control-Allow-Headers', 'Authorization')
-        response.headers.add('Content-Type' , 'application/json')
+        response.headers.add('Content-Type', 'application/json')
         response.headers.add('Access-Control-Allow-Headers', 'GET, POST, PATCH, DELETE, OPTIONS')
         return response
 
@@ -44,12 +45,16 @@ def create_app(test_config=None):
     """
     @app.route('/categories', methods=['GET'])
     def get_categories():
+        
         categories = Category.query.all()
         categories_dict = {}
+
         for category in categories:
             categories_dict[category.id] = category.type
+
         if len(categories_dict) == 0:
             abort (404)
+            
         return jsonify({
             'success': True,
             'categories':categories_dict,
@@ -89,6 +94,7 @@ def create_app(test_config=None):
             })
         except:
             abort(422)
+       
     """
     @TODO:
     Create an endpoint to DELETE question using a question ID.
@@ -96,7 +102,7 @@ def create_app(test_config=None):
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page.
     """
-    @app.route('/questions/<int:question_id>', methods = ['DELETE'])
+    @app.route('/questions/<int:question_id>', methods=['DELETE'])
     def delete_question(question_id):
         try:
             question = Question.query.filter(Question.id == question_id).one_or_none()
@@ -125,7 +131,7 @@ def create_app(test_config=None):
     the form will clear and the question will appear at the end of the last page
     of the questions list in the "List" tab.
     """
-    @app.route('/questions', methods =['POST'])
+    @app.route('/questions', methods=['POST'])
     def create_question():
         body = request.get_json()
 
@@ -177,6 +183,7 @@ def create_app(test_config=None):
             })
         except:
             abort(404)
+       
     """
     @TODO:
     Create a GET endpoint to get questions based on category.
@@ -192,14 +199,13 @@ def create_app(test_config=None):
 
             if (category is None):
                 abort(404)
-
             selection = Question.query.filter(Question.category == category_id).all()
             formatted_questions = paginate_questions(request, selection)
 
             return jsonify({
-                'success' : True,
+                'success': True,
                 'questions': formatted_questions,
-                'category':category.type,
+                'category': category.type,
                 'total_questions': len(formatted_questions)
             })
         except:
@@ -215,7 +221,7 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
-    @app.route('/quizzes', methods= ['POST'])
+    @app.route('/quizzes', methods=['POST'])
     def play_quiz():
         body = request.get_json()
         category = Category.query.all()
@@ -224,7 +230,7 @@ def create_app(test_config=None):
             quiz_category = body.get('quiz_category')
             previous_questions = body.get('previous_questions')
             category_id = quiz_category['id']
-            category_type =quiz_category['type']
+            category_type = quiz_category['type']
 
             if(category_type == 'click'):
                 questions = Question.query.filter((Question.id.notin_(previous_questions))).all()
@@ -243,35 +249,36 @@ def create_app(test_config=None):
     Create error handlers for all expected errors
     including 404 and 422.
     """
-    app.errorhandler(404)
+    @app.errorhandler(404)
     def not_found(error):
         return jsonify({
-            "success": False, 
-            "error": 404,
-            "message": "Not found"
-        }), 404
+            'success':False,
+            'message': 'not found',
+            'status': 404
+}), 404
 
     app.errorhandler(422)
     def unprocessable(error):
         return jsonify({
             "success": False, 
-            "error": 422,
+            "status": 422,
             "message": "Unprocessable"
         }), 422
     app.errorhandler(400)
+    
     def bad_record(error):
         return jsonify({
             "success": False, 
-            "error": 400,
+            "status": 400,
             "message": "Bad Record"
         }), 400
     app.errorhandler(500)
+  
     def server_error(error):
         return jsonify({
             "success": False, 
-            "error": 500,
+            "status": 500,
             "message": "Internal Server Error"
-        }),500
+        }), 500
 
     return app
-
