@@ -71,7 +71,7 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 You will need to provide detailed documentation of your API endpoints including the URL, request parameters, and the response body. Use the example below as a reference.
 
-### Documentation Example
+### Documentation
 
 `GET '/api/v1.0/categories'`
 
@@ -90,6 +90,113 @@ You will need to provide detailed documentation of your API endpoints including 
 }
 ```
 
+`GET 'api/v1.0/questions?page=${integer}'`
+- Fetches a paginated set of questions, a total number of questions, all categories and current category string.
+- Request Arguments: page - integer
+- Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string
+
+```json
+{
+    "questions": [
+        {
+            "id": 1,
+            "question": "Which driver has the most formula 1 wins?",
+            "answer": "Lewis Hamilton",
+            "difficulty": 2,
+            "category": 6
+        },
+    ],
+    "totalQuestions": 10,
+    "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+    },
+    "currentCategory": "Sports"
+}
+```
+`GET 'api/v1.0/categories/${id}/questions'`
+- Fetches questions for a cateogry specified by id request argument
+- Request Arguments: id - integer
+- Returns: An object with questions for the specified category, total questions, and current category string
+```json
+{
+     "questions": [
+        {
+            "id": 1,
+            "question": "Which driver has the most formula 1 wins?",
+            "answer": "Lewis Hamilton",
+            "difficulty": 2,
+            "category": 6
+        },
+    ],
+    "totalQuestions": 10,
+    "currentCategory": "Science"
+}
+```
+`POST 'api/v1.0/questions'`
+- Sends a post request in order to add a new question
+- Request Body:
+```json
+{
+         "question": "Which driver has the most formula 1 wins?",
+         "answer": "Lewis Hamilton",
+         "difficulty": 2,
+         "category": 6
+}
+```
+`POST 'api/v1.0/questions/search'`
+- Sends a post request in order to search for a specific question by search term
+- Request Body:
+```json
+{
+    "searchTerm": "this is the term the user is looking for"
+}
+```
+- Returns: any array of questions, a number of totalQuestions that met the search term and the current category string
+```json
+{
+    "questions": [
+        {
+            "id": 1,
+            "question": "Which driver has the most formula 1 wins?",
+            "answer": "Lewis Hamilton",
+            "difficulty": 2,
+            "category": 6
+        },
+    ],
+    "totalQuestions": 10,
+    "currentCategory": "Science"
+}
+```
+`DELETE 'api/v1.0/questions/${id}'`
+- Deletes a specified question using the id of the question
+- Request Arguments: id - integer
+
+`POST 'api/v1.0/quizzes'`
+- Sends a post request in order to get the next question
+- Request Body:
+```json
+{
+    "previous_questions": [1, 4, 20, 15]
+    "quiz_category": "current category"
+ } 
+```
+- Returns
+```json
+{
+    "question": {
+          "id": 1,
+           "question": "Which driver has the most formula 1 wins?",
+           "answer": "Lewis Hamilton",
+           "difficulty": 2,
+           "category": 6
+    }
+}
+```
 ## Testing
 
 Write at least one test for the success and at least one error behavior of each endpoint using the unittest library.
