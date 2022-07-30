@@ -92,36 +92,36 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().delete('/questions/1')
         data = json.loads(res.data)
 
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        # self.assertEqual(data['deleted'], 1)
+
+    def test_422_question_does_not_exist(self):
+        res = self.client().delete('/questions/1000')
+        data = json.loads(res.data)
+        
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Unprocessable')
+    
+    def test_create_question(self):
+        test_question = {
+            "question": "Who has the formula 1 wins",
+            "answer": "",
+            "category": "6",
+            "difficulty": "2"
+
+        }
+        res = self.client().post('/questions', json=test_question)
+        data = json.loads(res.data)
+        
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['deleted'], 1)
-
-    # def test_404_question_does_not_exist(self):
-    #     res = self.client().delete('/questions/1000')
-    #     data = json.loads(res.data)
-        
-    #     self.assertEqual(res.status_code, 404)
-    #     self.assertEqual(data['success'], False)
-    #     self.assertEqual(data['message'], 'not found')
-    
-    # def test_create_question(self):
-    #     test_question = {
-    #         "question": "Who is the driver with the most wins?",
-    #         "answer": "Lewis Hamilton",
-    #         "category": "6",
-    #         "difficulty": "2"
-
-    #     }
-    #     res = self.client().post('/questions', json=self.test_question)
-    #     data = json.loads(res.data)
-        
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertTrue(data['success'], True)
-    #     self.assertTrue(data['created'])
+        self.assertTrue(data['created'])
 
     # def test_422_create_question_error(self):
     #     test_question = {
-    #         "question": "Who has the formula 1 wins",
+    #         "question": "",
     #         "answer": "",
     #         "category": "6",
     #         "difficulty": "2"
@@ -134,21 +134,21 @@ class TriviaTestCase(unittest.TestCase):
     #     self.assertEqual(data['success'], False)
     #     self.assertEqual(data['message'], 'unprocessable')
 
-    # def test_search_question(self):
-    #     res = self.client().post('/questions', json={'search_term': 'question'})
-    #     data = json.loads(res.data)
+    def test_search_question(self):
+        res = self.client().post('/questions', json={'search_term': 'question'})
+        data = json.loads(res.data)
 
-    #     self.assertEqual(data['success'], True)
-    #     self.assertTrue(data['questions'])
-    #     self.assertTrue(data['total_questions'])
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
 
-    # def test_get_individual_question_error(self):
-    #     res = self.client().post('questions/search', json={"search_term": ""})
-    #     data = json.loads(res.data)
+    def test_get_individual_question_search_error(self):
+        res = self.client().post('questions/search', json={"search_term": ""})
+        data = json.loads(res.data)
 
-    #     self.assertEqual(res.status_code, 422)
-    #     self.assertEqual(data['success'], False)
-    #     self.assertEqual(data['message'], 'unprocessable')
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'not found')
 
     def test_get_quiz(self):
         res = self.client().post('/quizzes',
@@ -161,13 +161,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['question'])
         self.assertEqual(data['question']['category'], 6)
 
-    # def test_422_get_quiz(self):
-    #     res = self.client().post('/quizzes',json={'previous_questions': []})
-    #     data = json.loads(res.data)
+    def test_422_get_quiz(self):
+        res = self.client().post('/quizzes',json={'previous_questions': []})
+        data = json.loads(res.data)
 
-    #     self.assertEqual(res.status_code, 422)
-    #     self.assertEqual(data['success'], False)
-    #     self.assertEqual(data['message'], 'unprocessable')
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Unprocessable')
 
 # # Make the tests conveniently executable
 if __name__ == "__main__":

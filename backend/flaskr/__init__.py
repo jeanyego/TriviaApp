@@ -93,7 +93,7 @@ def create_app(test_config=None):
                 'current_category':None
             })
         except:
-            abort(422)
+            abort(404)
        
     """
     @TODO:
@@ -106,7 +106,6 @@ def create_app(test_config=None):
     def delete_question(question_id):
         try:
             question = Question.query.filter(Question.id == question_id).one_or_none()
-
             if question is None:
                 abort(404)
             question.delete()
@@ -117,7 +116,7 @@ def create_app(test_config=None):
                 'success' : True,
                 'deleted': question_id,
                 'questions':formatted_questions,
-                'total_questions': len(Question.query.all())
+                'total_questions': len(selection)
             })
         except:
             abort(422)
@@ -141,18 +140,18 @@ def create_app(test_config=None):
         new_difficulty = body.get ('difficulty' , None)
 
         try:
-            question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty )
-            question.insert()
+                question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
+                question.insert()
+             
+                selection = Question.query.order_by(Question.id).all()
+                formatted_questions = paginate_questions(request, selection)
 
-            selection = Question.query.order_by(Question.id).all()
-            formatted_questions = paginate_questions(request, selection)
-
-            return jsonify({
-                'success' : True,
-                'created': question.id,
-                'questions':formatted_questions,
-                'total_questions': len(Question.query.all())
-            })
+                return jsonify({
+                    'success' : True,
+                    'created': question.id,
+                    'questions':formatted_questions,
+                    'total_questions': len(Question.query.all())
+                })
         except:
             abort(422)
     """
@@ -257,23 +256,23 @@ def create_app(test_config=None):
             'status': 404
 }), 404
 
-    app.errorhandler(422)
+    @app.errorhandler(422)
     def unprocessable(error):
         return jsonify({
             "success": False, 
             "status": 422,
             "message": "Unprocessable"
         }), 422
-    app.errorhandler(400)
-    
+
+    @app.errorhandler(400)
     def bad_record(error):
         return jsonify({
             "success": False, 
             "status": 400,
             "message": "Bad Record"
         }), 400
-    app.errorhandler(500)
-  
+
+    @app.errorhandler(500)
     def server_error(error):
         return jsonify({
             "success": False, 
